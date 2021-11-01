@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Blog(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   title = models.CharField(max_length=30)
+  description = models.TextField()
   date = models.DateField()
   followers = models.ManyToManyField(User, related_name="followers")
 
