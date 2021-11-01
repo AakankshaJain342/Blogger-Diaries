@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h2>View All Blogs</h2>
+<ul>
+  {% for blog in blogs %}
+  <li><a href="{% url 'blogs:blog_view' blog_id=blog.id %}">{{ blog.title }}</li>
+  {% empty %}
+  <li>There are no blogs.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
