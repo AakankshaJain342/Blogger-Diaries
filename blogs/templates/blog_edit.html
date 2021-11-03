@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+<h2>Edit a Blog</h2>
+
+{% block main %}
+<form id="blog-edit-form" method="post" class="needs-validation" novalidate>
+  {% csrf_token %} 
+  <label class="form-label">Title</label>
+  <div class="input-group">
+    <input type="text" name="title" class="form-control" value={{blog.title}} maxlength="40" required="" id="id_title">
+  </div>
+  <br />
+  <label class="form-label">Description</label>
+  <div class="input-group">
+    <textarea name="description" cols="40" rows="10" class="form-control" maxlength="500" required="" id="id_description">{{blog.description}}</textarea>
+  </div>
+  <br />
+  {%if(blog.user!=request.user)%}
+    <button type="submit" class="btn btn-primary">Edit Blog</button>
+    {%endif%}
+</form>
+{% endblock main %}
