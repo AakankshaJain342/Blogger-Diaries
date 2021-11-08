@@ -7,7 +7,7 @@
   {% csrf_token %} 
   <label class="form-label">Title</label>
   <div class="input-group">
-    <input type="text" name="title" class="form-control" value={{blog.title}} maxlength="40" required="" id="id_title">
+    <input type="text" name="title" class="form-control" value="{{blog.title}}" maxlength="40" required="" id="id_title">
   </div>
   <br />
   <label class="form-label">Description</label>
