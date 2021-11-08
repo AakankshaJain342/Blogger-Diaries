@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
-from blogs.models import Blog
+from blogs.models import Blog, Post
 from django import forms
 from datetime import datetime
 
 class BlogCreationForm(forms.ModelForm):
-  title = forms.CharField(max_length=40, label="Title", required=True,widget=forms.TextInput(attrs={'class': "form-control"}))
+  title = forms.CharField(max_length=30, label="Title", required=True,widget=forms.TextInput(attrs={'class': "form-control"}))
   description = forms.CharField(max_length=500, label='Description',required=True,widget=forms.Textarea(attrs={'class': 'form-control'}))
   class Meta:
     model = Blog
@@ -20,6 +20,12 @@ class BlogEditForm(forms.ModelForm):
     model = Blog
     fields = ['title', 'description']
 
+class PostCreationForm(forms.ModelForm):
+  title = forms.CharField(max_length=40, label="Title", required=True,widget=forms.TextInput(attrs={'class': "form-control"}))
+  body = forms.CharField(label='Body',required=True,widget=forms.Textarea(attrs={'class': 'form-control'}))
+  class Meta:
+    model = Post
+    fields = ['title', 'body']
 
 # Create your views here.
 def index(request):
@@ -73,4 +79,23 @@ def blog_edit(request,blog_id):
   else:
     form = BlogEditForm()
     return render(request, 'blog_edit.html', {'form': form, 'blog': blogedit})
-       
+
+@login_required(login_url=reverse_lazy('auth:login'))
+def post_create(request, blog_id):
+  blog=Blog.objects.get(id=blog_id)
+  if(blog.user!=request.user):
+    messages.add_message(request, messages.ERROR, "You do not have the permissions to edit this blog.")
+    return redirect('blogs:blog_view',blog_id=blog_id)
+
+  if request.method == 'POST':
+    form = PostCreationForm(request.POST)
+    if form.is_valid():
+      post = form.save(commit=False)
+      post.date = datetime.now()
+      post.blog = blog
+      post.save()
+      return render(request, 'post_view.html', {'post': post})
+    return render(request, 'post_create.html', {'form': form})
+  else:
+    form = PostCreationForm()
+    return render(request, 'post_create.html', {'form': form})
