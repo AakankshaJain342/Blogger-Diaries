@@ -35,7 +35,8 @@ def index(request):
 
 def blog_view(request, blog_id):
   blog = Blog.objects.get(pk=blog_id)
-  return render(request, 'blog_view.html', {'blog': blog})
+  posts = blog.posts.all()
+  return render(request, 'blog_view.html', {'blog': blog, 'posts': posts})
 
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_create(request):
@@ -46,7 +47,7 @@ def blog_create(request):
       blog.date = datetime.now()
       blog.user = request.user
       blog.save()
-      return render(request, 'blog_view.html', {'blog': blog})
+      return redirect('blogs:blog_view', blog_id=blog.id)
     return render(request, 'blog_create.html', {'form': form})
   else:
     form = BlogCreationForm()
@@ -57,24 +58,20 @@ def blog_edit(request,blog_id):
   # Check if user is the owner of the blog.
   blogedit=Blog.objects.get(id=blog_id)
   if(blogedit.user!=request.user):
-    messages.add_message(request, messages.ERROR, "You do not have the permissions to edit this blog.")
+    messages.add_message(request, messages.ERROR, "You do not have the permission to edit this blog.")
     return redirect('blogs:blog_view',blog_id=blog_id)
   
   if request.method == 'POST':
     form = BlogEditForm(request.POST,initial={'title': 'Aakanksha'})
     if form.is_valid():
-      blog = form.save(commit=False)
+      blog_data = form.save(commit=False)
       try:
-        blogedit.title = blog.title
-        blogedit.description = blog.description
+        blogedit.title = blog_data.title
+        blogedit.description = blog_data.description
         blogedit.save()
       except:
         return render(request, 'blog_edit.html', {'form': form})
-      # blog.date = datetime.now()
-      # blog.user = request.user
-      # blog.save()
-      print(blog.title)
-      return render(request, 'blog_view.html', {'blog': blog})
+      return redirect('blogs:blog_view',blog_id=blog_id)
     return render(request, 'blog_edit.html', {'form': form})
   else:
     form = BlogEditForm()
@@ -82,9 +79,10 @@ def blog_edit(request,blog_id):
 
 @login_required(login_url=reverse_lazy('auth:login'))
 def post_create(request, blog_id):
+  print('inside post_create')
   blog=Blog.objects.get(id=blog_id)
   if(blog.user!=request.user):
-    messages.add_message(request, messages.ERROR, "You do not have the permissions to edit this blog.")
+    messages.add_message(request, messages.ERROR, "You do not have the permission to create post on this blog.")
     return redirect('blogs:blog_view',blog_id=blog_id)
 
   if request.method == 'POST':
@@ -94,7 +92,7 @@ def post_create(request, blog_id):
       post.date = datetime.now()
       post.blog = blog
       post.save()
-      return render(request, 'post_view.html', {'post': post})
+      return redirect('posts:post_view', post_id=post.id)
     return render(request, 'post_create.html', {'form': form})
   else:
     form = PostCreationForm()

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h2>{{post.title}}</h2>
+<br />
+<div>
+  {% autoescape off %}
+    {{ post_html }}
+{% endautoescape %}
+</div>
+
+{% if blog.user.id == request.user.id %}
+<a href="url 'blogs:post_create' blog_id=blog.id "> Edit Post </a>
+{% endif %}
+{% endblock %}
