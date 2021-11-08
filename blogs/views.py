@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.urls import reverse_lazy
 from blogs.models import Blog
 from django import forms
@@ -47,14 +48,17 @@ def blog_create(request):
 
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_edit(request,blog_id):
+  # Check if user is the owner of the blog.
+  blogedit=Blog.objects.get(id=blog_id)
+  if(blogedit.user!=request.user):
+    messages.add_message(request, messages.ERROR, "You do not have the permissions to edit this blog.")
+    return redirect('blogs:blog_view',blog_id=blog_id)
+  
   if request.method == 'POST':
     form = BlogEditForm(request.POST,initial={'title': 'Aakanksha'})
     if form.is_valid():
       blog = form.save(commit=False)
       try:
-        blogedit=Blog.objects.get(id=blog_id)
-        if(blogedit.user!=request.user):
-          return render(request, 'blog_edit.html', {'form': form})
         blogedit.title = blog.title
         blogedit.description = blog.description
         blogedit.save()
@@ -68,6 +72,5 @@ def blog_edit(request,blog_id):
     return render(request, 'blog_edit.html', {'form': form})
   else:
     form = BlogEditForm()
-    blogedit=Blog.objects.get(id=blog_id)
     return render(request, 'blog_edit.html', {'form': form, 'blog': blogedit})
        

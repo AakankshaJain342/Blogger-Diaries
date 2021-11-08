@@ -2,5 +2,8 @@
 
 {% block main %}
 <h2>{{blog.title}}</h2>
-<p>{{blog.description}}-<a href="/blogs/{{ blog.id }}/edit"> Edit Blog </a></p>
+<p>{{blog.description}}
+  {% if blog.user.id == request.user.id %}
+  - <a href="/blogs/{{ blog.id }}/edit"> Edit Blog </a></p>
+  {% endif %}
 {% endblock %}
