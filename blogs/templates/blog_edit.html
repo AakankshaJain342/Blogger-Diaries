@@ -15,8 +15,6 @@
     <textarea name="description" cols="40" rows="10" class="form-control" maxlength="500" required="" id="id_description">{{blog.description}}</textarea>
   </div>
   <br />
-  {%if(blog.user!=request.user)%}
     <button type="submit" class="btn btn-primary">Edit Blog</button>
-    {%endif%}
 </form>
 {% endblock main %}
