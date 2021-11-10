@@ -10,5 +10,4 @@ from markdown import markdown
 def post_view(request, post_id):
   post = Post.objects.get(pk=post_id)
   post_html = markdown(post.body)
-  print(post_html)
   return render(request, 'post_view.html', {'post': post, 'post_html': post_html})

@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-<h2>Login Form</h2>
-
 {% block main %}
 <!-- <form method="post">
   {% csrf_token %}
@@ -11,6 +9,8 @@
   <input id="password" name="password" type="password" class="form-control" required /><br />
   <button type="login" class="btn btn-primary">Sign up</button>
 </form> -->
+<h2>Login Form</h2>
+
 <form id="login-form" method="post" class="needs-validation" novalidate>
   {% csrf_token %}
   {% for field in form %}

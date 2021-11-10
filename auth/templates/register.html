@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
+{% block main %}
 <h2>Sign up Form</h2>
 
-{% block main %}
 <form id="submit-form" method="post" class="needs-validation" novalidate>
   {% csrf_token %}
   {% for field in form %}
