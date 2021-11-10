@@ -30,7 +30,6 @@ class PostCreationForm(forms.ModelForm):
 # Create your views here.
 def index(request):
   blogs = Blog.objects.all()
-  print(blogs)
   return render(request, 'index.html', {'blogs': blogs})
 
 def blog_view(request, blog_id):
@@ -56,8 +55,8 @@ def blog_create(request):
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_edit(request,blog_id):
   # Check if user is the owner of the blog.
-  blogedit=Blog.objects.get(id=blog_id)
-  if(blogedit.user!=request.user):
+  blog=Blog.objects.get(id=blog_id)
+  if(blog.user!=request.user):
     messages.add_message(request, messages.ERROR, "You do not have the permission to edit this blog.")
     return redirect('blogs:blog_view',blog_id=blog_id)
   
@@ -66,20 +65,19 @@ def blog_edit(request,blog_id):
     if form.is_valid():
       blog_data = form.save(commit=False)
       try:
-        blogedit.title = blog_data.title
-        blogedit.description = blog_data.description
-        blogedit.save()
+        blog.title = blog_data.title
+        blog.description = blog_data.description
+        blog.save()
       except:
         return render(request, 'blog_edit.html', {'form': form})
       return redirect('blogs:blog_view',blog_id=blog_id)
-    return render(request, 'blog_edit.html', {'form': form})
+    return render(request, 'blog_edit.html', {'form': form, 'blog': blog})
   else:
     form = BlogEditForm()
-    return render(request, 'blog_edit.html', {'form': form, 'blog': blogedit})
+    return render(request, 'blog_edit.html', {'form': form, 'blog': blog})
 
 @login_required(login_url=reverse_lazy('auth:login'))
 def post_create(request, blog_id):
-  print('inside post_create')
   blog=Blog.objects.get(id=blog_id)
   if(blog.user!=request.user):
     messages.add_message(request, messages.ERROR, "You do not have the permission to create post on this blog.")
@@ -93,7 +91,7 @@ def post_create(request, blog_id):
       post.blog = blog
       post.save()
       return redirect('posts:post_view', post_id=post.id)
-    return render(request, 'post_create.html', {'form': form})
+    return render(request, 'post_create.html', {'form': form, 'blog': blog})
   else:
     form = PostCreationForm()
-    return render(request, 'post_create.html', {'form': form})
+    return render(request, 'post_create.html', {'form': form, 'blog': blog})

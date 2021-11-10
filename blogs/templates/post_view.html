@@ -1,15 +1,29 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'blogs:index' %}">Blogs</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'blogs:blog_view' blog_id=post.blog.id %}">{{post.blog.title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{post.title}}</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block main %}
-<h2>{{post.title}}</h2>
+<div class="d-flex align-items-center">
+  <h2>{{post.title}}</h2>
+  {% if post.blog.user.id == request.user.id %}
+  <a href="{% url 'posts:post_view' post_id=post.id %}" class="btn btn-primary ms-auto">Edit Post</a>
+  {% endif %}
+</div>
+
 <br />
-<div>
+<div class="p-4 border markdown-body border-gray rounded-3">
   {% autoescape off %}
     {{ post_html }}
 {% endautoescape %}
 </div>
 
-{% if blog.user.id == request.user.id %}
-<a href="url 'blogs:post_create' blog_id=blog.id "> Edit Post </a>
-{% endif %}
 {% endblock %}

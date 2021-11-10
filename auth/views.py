@@ -32,7 +32,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.add_message(request,messages.SUCCESS, "You have successfully logged in")
-                return redirect('index')
+                return redirect('blogs:index')
             else:
                 # Return an 'invalid login' error message.
                 messages.add_message(request, messages.ERROR, "Authentication details were incorrect")
@@ -50,7 +50,6 @@ def register_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            print(form.cleaned_data)
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
