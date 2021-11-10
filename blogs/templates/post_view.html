@@ -12,4 +12,16 @@
 {% if blog.user.id == request.user.id %}
 <a href="url 'blogs:post_create' blog_id=blog.id "> Edit Post </a>
 {% endif %}
+<h2> Comments:</h2>
+{% if not post.comments.all %}
+  No Comments yet!!! <a href="#">
+  Add one!
+  </a>
+
+{% else %}
+  {% for comment in post.comments.all %}
+    {{comment.user}}-
+    {{comment.text}}
+  {% endfor %}
+{% endif %}
 {% endblock %}
