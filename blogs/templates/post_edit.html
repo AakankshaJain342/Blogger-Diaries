@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'blogs:index' %}">Blogs</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'blogs:blog_view' blog_id=post.blog.id %}">{{post.blog.title}}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'posts:post_view' post_id=post.id %}">{{post.title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Post</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block main %}
 <h2>Edit a Post  <b>'{{post.title}}'</b></h2>
 

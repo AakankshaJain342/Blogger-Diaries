@@ -27,13 +27,6 @@ class PostCreationForm(forms.ModelForm):
     model = Post
     fields = ['title', 'body']
 
-class PostEditForm(forms.ModelForm):
-  title = forms.CharField(max_length=40, label="Title", required=True,widget=forms.TextInput(attrs={'class': "form-control"}))
-  body = forms.CharField(label='Body',required=True,widget=forms.Textarea(attrs={'class': 'form-control'}))
-  class Meta:
-    model = Post
-    fields = ['title', 'body']
-
 # Create your views here.
 def index(request):
   blogs = Blog.objects.all()
@@ -103,29 +96,3 @@ def post_create(request, blog_id):
   else:
     form = PostCreationForm()
     return render(request, 'post_create.html', {'form': form, 'blog': blog})
-
-@login_required(login_url=reverse_lazy('auth:login'))
-def post_edit(request,post_id):
-  # Check if user is the owner of the blog.
-  post=Post.objects.get(id=post_id)
-  # print('hi',post.blog.user,request.user,request.method);
-  if(post.blog.user!=request.user):
-    messages.add_message(request, messages.ERROR, "You do not have the permission to edit this blog.")
-    return redirect('posts:post_view',post_id=post_id)
-  
-  if request.method == 'POST':
-    form = PostEditForm(request.POST,initial={'title': 'Aakanksha'})
-    if form.is_valid():
-      post_data = form.save(commit=False)
-      try:
-        post.title = post_data.title
-        post.body = post_data.body
-        # print(post_data)
-        post.save()
-      except:
-        return render(request, 'post_edit.html', {'form': form})
-      return redirect('posts:post_view',post_id=post_id)
-    return render(request, 'post_edit.html', {'form': form, 'blog': blog})
-  else:
-    form = PostEditForm()
-    return render(request, 'post_edit.html', {'form': form, 'post': post})
