@@ -35,7 +35,10 @@ def index(request):
 def blog_view(request, blog_id):
   blog = Blog.objects.get(pk=blog_id)
   posts = blog.posts.all()
-  return render(request, 'blog_view.html', {'blog': blog, 'posts': posts})
+  following = False
+  if request.user.is_authenticated:
+    following = request.user.following.filter(pk=blog_id).exists()
+  return render(request, 'blog_view.html', {'blog': blog, 'posts': posts, 'following': following})
 
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_create(request):
@@ -96,3 +99,13 @@ def post_create(request, blog_id):
   else:
     form = PostCreationForm()
     return render(request, 'post_create.html', {'form': form, 'blog': blog})
+
+@login_required(login_url=reverse_lazy('auth:login'))
+def blog_follower(request, blog_id):
+  if request.method == 'POST':
+    if not request.user.following.filter(pk=blog_id).exists():
+      request.user.following.add(blog_id)
+  elif request.method == 'DELETE':
+    if request.user.following.filter(pk=blog_id).exists():
+      request.user.following.remove(blog_id)
+  return redirect('blogs:blog_view', blog_id=blog_id)

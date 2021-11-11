@@ -12,10 +12,25 @@
 
 {% block main %}
 <div class="d-flex align-items-center">
-  <h2>{{blog.title}}</h2>
-  {% if blog.user.id == request.user.id %}
-  <a href="{% url 'blogs:blog_edit' blog_id=blog.id %}" class="btn btn-primary ms-auto">Edit Blog</a>
+  <h2 class="me-auto">{{blog.title}}</h2>
+  {% if not blog.user.id == request.user.id %}
+    {% if not following %}
+      <form action="{% url 'blogs:blog_follower' blog_id=blog.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-primary">Follow</button>
+      </form>
+    {% else %}
+      {% load method_override %}
+      <form action="{% url 'blogs:blog_follower' blog_id=blog.id %}" method="POST">
+        {% csrf_token %}
+        {% method_override 'DELETE' %}
+        <button type="submit" class="btn btn-primary">Unfollow</button>
+      </form>
+    {% endif %}
+  {% else %}
+    <a href="{% url 'blogs:blog_edit' blog_id=blog.id %}" class="btn btn-primary">Edit Blog</a>  
   {% endif %}
+
 </div>
 
 <p>{{blog.description}}</p>
