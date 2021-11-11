@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'blogs:index' %}">Blogs</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{blog.title}}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block main %}
+<h2>Feed </h2>
+<p class="mb-4">You can view all posts of all blogs you are following here.</>
+
+<div>
+  {% for post in posts %}
+  <!-- <li><a href="/posts/{{ post.id }}/"> {{post.title }}</a></li> -->
+  <div class="mb-2">
+    <a href="{% url 'posts:post_view' post_id=post.id %}">
+      <h5 class="d-inline">{{ post.title }}</h5>
+    </a>
+    <span>- {{post.blog.title }}</span>
+  </div>
+  {% empty %}
+  <p>No posts yet.</p>
+  {% endfor %}  
+</div>
+
+{% endblock %}

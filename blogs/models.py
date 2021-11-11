@@ -7,7 +7,7 @@ class Blog(models.Model):
   title = models.CharField(max_length=30)
   description = models.TextField()
   date = models.DateField()
-  followers = models.ManyToManyField(User, related_name="followers")
+  followers = models.ManyToManyField(User, related_name="following")
 
 class Post(models.Model):
   body = models.TextField()
