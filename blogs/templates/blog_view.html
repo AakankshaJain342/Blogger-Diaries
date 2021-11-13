@@ -43,19 +43,19 @@
   {% endif %}
 </div>
 
-<div class="container">
-  <div class="row gx-3">
+  <div class="row">
     {% for post in posts %}
-    <div class="mb-3 card col col-4">
-      <div class="card-body">
-        <h5 class="card-title">{{ post.title }}</h5>
-        <p class="mb-2 card-subtitle text-muted">{{post.created_at}}</p>
-        <a href="/posts/{{ post.id }}/" class="btn btn-primary">View Post</a>
+    <div class="mb-3 col col-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="mb-2 card-subtitle text-muted">{{post.created_at}}</p>
+          <a href="/posts/{{ post.id }}/" class="btn btn-primary">View Post</a>
+        </div>
       </div>
     </div>
     {% empty %}
     <p class="fs-5 col-12">No posts yet.</p>
     {% endfor %}
   </div>
-</div>
 {% endblock %}
