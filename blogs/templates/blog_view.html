@@ -43,15 +43,17 @@
   {% endif %}
 </div>
 
-{% if post in posts %}
-<ul>
-  {% for post in posts %}
-    <li><a href="/posts/{{ post.id }}/"> {{post.title }}</a></li>
-  {% endfor %}  
-</ul>
-{% endif %}
-
-{% if not post in posts %}
+{% for post in posts %}
+  <li><a href="/posts/{{ post.id }}/"> {{post.title }}</a></li>
+  <div class="card" style="width: 18rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{ post.title }}</h5>
+      <p class="mb-2 card-subtitle text-muted">{{post.created_at}}</p>
+      <a href="/posts/{{ post.id }}/" class="btn btn-primary">View Post</a>
+    </div>
+  </div>
+{% empty %}
   <p class="fs-5">No posts yet.</p>
-{% endif %}
+{% endfor %}
 {% endblock %}
