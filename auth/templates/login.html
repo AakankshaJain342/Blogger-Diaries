@@ -9,32 +9,34 @@
   <input id="password" name="password" type="password" class="form-control" required /><br />
   <button type="login" class="btn btn-primary">Sign up</button>
 </form> -->
-<h2>Login Form</h2>
 
-<form id="login-form" method="post" class="needs-validation" novalidate>
-  {% csrf_token %}
-  {% for field in form %}
+<div class="pt-4 row">
+  <form id="login-form" method="post" class="needs-validation col-md-6 offset-md-3" novalidate>
+    <h2>Login Form</h2>
+    {% csrf_token %}
+    {% for field in form %}
     <label for="{{field.id_for_label}}" class="form-label">{{field.label}}</label>
     <div class="input-group">
       {{field}}
-
+      
       <div class="valid-feedback w-100">
         Looks good!
       </div>
       <div class="invalid-feedback w-100">
         {% if field.errors %} 
-          {% for error in field.errors %}
-            {{ error }}
-            <br />
-          {% endfor %}
+        {% for error in field.errors %}
+        {{ error }}
+        <br />
+        {% endfor %}
         {% endif %}
       </div>
     </div>
     <br />
-
-  {% endfor %}
-  <button type="login" class="btn btn-primary">Sign in</button>
-</form>
+    
+    {% endfor %}
+    <button type="login" class="btn btn-primary">Sign in</button>
+  </form>
+</div>
 {% endblock main %}
 
 {% block scripts %}
