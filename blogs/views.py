@@ -52,6 +52,7 @@ def blog_create(request):
       blog = form.save(commit=False)
       blog.user = request.user
       blog.save()
+      messages.add_message(request, messages.SUCCESS, "Your blog was created successfully")
       return redirect('blogs:blog_view', blog_id=blog.id)
     return render(request, 'blog_create.html', {'form': form})
   else:
@@ -75,6 +76,7 @@ def blog_edit(request,blog_id):
         blog.title = blog_data.title
         blog.description = blog_data.description
         blog.save()
+        messages.add_message(request, messages.SUCCESS, "Your blog was successfully edited.")
       except:
         return render(request, 'blog_edit.html', {'form': form})
       return redirect('blogs:blog_view',blog_id=blog_id)
@@ -97,6 +99,7 @@ def post_create(request, blog_id):
       post = form.save(commit=False)
       post.blog = blog
       post.save()
+      messages.add_message(request, messages.SUCCESS, "Your post was successfully created.")
       return redirect('posts:post_view', post_id=post.id)
     return render(request, 'post_create.html', {'form': form, 'blog': blog})
   else:

@@ -38,7 +38,9 @@ def post_edit(request,post_id):
         post.body = post_data.body
         # print(post_data)
         post.save()
+        messages.add_message(request, messages.SUCCESS, "Your post was successfully edited.")
       except:
+        messages.add_message(request, messages.ERROR, "An error occurred while editing the post.")
         return render(request, 'post_edit.html', {'form': form, 'post': post})
       return redirect('posts:post_view',post_id=post_id)
     return render(request, 'post_edit.html', {'form': form, 'post': post})
