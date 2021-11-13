@@ -15,16 +15,56 @@
 
 <div>
   {% for post in posts %}
-  <!-- <li><a href="/posts/{{ post.id }}/"> {{post.title }}</a></li> -->
-  <div class="mb-2">
-    <a href="{% url 'posts:post_view' post_id=post.id %}">
-      <h5 class="d-inline">{{ post.title }}</h5>
-    </a>
-    <span>- {{post.blog.title }}</span>
+  <div class="mb-3 card">
+    <div class="card-body">
+      <h5 class="card-title"><a href="/posts/{{ post.id }}/"> {{post.title }}</a></h5>
+      <h6 class="mb-3 card-subtitle"><a href="/blogs/{{ post.blog.id }}/">Blog: {{post.blog.title}}</a></h6>
+      <p class="mb-2 card-subtitle text-muted">{{ post.blog.user }} - {{post.created_at}}</p>
+      <div class="p-4 mb-2 overflow-hidden border markdown-body border-gray rounded-3">
+        {% autoescape off %}
+        {{ post.html }}
+        {% endautoescape %}
+        <div class="post-end d-flex align-items-center justify-content-center">
+          <a href="/posts/{{ post.id }}/" class="btn btn-outline-dark text-dark text-decoration-none">View Full Post</a>
+        </div>
+      </div>
+    </div>
   </div>
   {% empty %}
   <p>No posts yet.</p>
   {% endfor %}  
 </div>
 
+<style>
+  .markdown-body {
+    min-height: 100px;
+    max-height: 250px;
+    position: relative;
+  }
+
+  .post-end {
+    position:absolute; 
+    bottom: 0; 
+    right: 0; 
+    left: 0; 
+    height:100px; 
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgb(255, 255, 255, 1))
+  }
+
+  .post-end .btn-outline-dark {
+    background: white!important;
+  }
+
+  .post-end .text-dark:hover {
+    background: black!important;
+    color: white!important;
+  }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    console.log("hello")
+    console.log($(".markdown-body"))
+</script>
 {% endblock %}

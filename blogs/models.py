@@ -32,6 +32,7 @@ class Post(models.Model):
   def __str__(self):
     return f"{self.title} - {self.blog}"
 
+  @property
   def html(self):
     uncleaned_html = markdown(self.body)
     cleaned_html = clean(uncleaned_html, markdown_tags, markdown_attrs, all_styles)

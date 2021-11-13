@@ -16,7 +16,7 @@ class PostEditForm(forms.ModelForm):
 # Create your views here.
 def post_view(request, post_id):
   post = Post.objects.get(pk=post_id)
-  post_html = post.html()
+  post_html = post.html
   return render(request, 'post_view.html', {'post': post, 'post_html': post_html})
 
 @require_http_methods(['GET', 'POST'])

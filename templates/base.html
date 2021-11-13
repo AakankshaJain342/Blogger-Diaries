@@ -59,6 +59,14 @@
         $(".alert").alert('close')
       }, 2000)
     </script>
+
+  <script>
+      console.log("hello")
+      $(".markdown-body").each(function (elem) {
+        console.log($( this ))
+      })
+  </script>
+
   {% block scripts %}
   {% endblock scripts %}
   </body>
