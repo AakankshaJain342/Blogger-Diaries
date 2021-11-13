@@ -5,7 +5,7 @@ from bleach import clean
 from bleach_allowlist import markdown_tags, all_styles
 
 markdown_attrs = {
-    "*": ["id"],
+    "*": ["id", "height", "width", "align", "border", "color", "margin", "padding"],
     "img": ["src", "alt", "title"],
     "a": ["href", "alt", "title"],
 }
