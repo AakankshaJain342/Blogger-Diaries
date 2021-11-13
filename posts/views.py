@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
-from blogs.models import Post
+from blogs.models import Post, Comment
 from django import forms
-from markdown import markdown
-# from django import forms
-# from datetime import datetime
 
 class PostEditForm(forms.ModelForm):
   title = forms.CharField(max_length=40, label="Title", required=True,widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -18,9 +16,10 @@ class PostEditForm(forms.ModelForm):
 # Create your views here.
 def post_view(request, post_id):
   post = Post.objects.get(pk=post_id)
-  post_html = markdown(post.body)
+  post_html = post.html()
   return render(request, 'post_view.html', {'post': post, 'post_html': post_html})
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url=reverse_lazy('auth:login'))
 def post_edit(request,post_id):
   # Check if user is the owner of the blog.
@@ -46,3 +45,24 @@ def post_edit(request,post_id):
   else:
     form = PostEditForm({'title': post.title, 'body': post.body})
     return render(request, 'post_edit.html', {'form': form, 'post': post})
+
+@require_POST
+@login_required(login_url=reverse_lazy('auth:login'))
+def comment_create(request, post_id):
+  text = request.POST.get('text')
+  comment = Comment.objects.create(post_id=post_id, text=text, user=request.user)
+  comment.save()
+  messages.add_message(request, messages.SUCCESS, "Comment created.")
+  return redirect('posts:post_view', post_id=post_id)
+
+@require_http_methods(['DELETE'])
+@login_required(login_url=reverse_lazy('auth:login'))
+def comment_delete(request, post_id, comment_id):
+  comment = Comment.objects.get(id=comment_id)
+  if request.method == 'DELETE':
+    if request.user.id == comment.user.id:
+      comment.delete()
+      messages.add_message(request, messages.SUCCESS, "Comment deleted.")
+    else:
+      messages.add_message(request, messages.ERROR, "You cannot delete this comment.")
+    return redirect('posts:post_view', post_id=post_id)

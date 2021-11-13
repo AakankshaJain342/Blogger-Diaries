@@ -10,5 +10,5 @@ def home_view(request):
 
 @login_required(login_url=reverse_lazy('auth:login'))
 def feed_view(request):
-  posts = Post.objects.filter(blog__pk__in=request.user.following.all()).order_by('date')
+  posts = Post.objects.filter(blog__pk__in=request.user.following.all()).order_by('created_at')
   return render(request, "feed.html", {"posts": posts})

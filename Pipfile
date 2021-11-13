@@ -7,6 +7,8 @@ name = "pypi"
 django = "*"
 markdown = "*"
 django-method-override = "*"
+bleach = "*"
+bleach-allowlist = "*"
 
 [dev-packages]
 

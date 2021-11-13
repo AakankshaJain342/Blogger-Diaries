@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
 from blogs.models import Blog, Post
 from django import forms
-from datetime import datetime
 
 class BlogCreationForm(forms.ModelForm):
   title = forms.CharField(max_length=30, label="Title", required=True,widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -28,10 +28,12 @@ class PostCreationForm(forms.ModelForm):
     fields = ['title', 'body']
 
 # Create your views here.
+@require_GET
 def index(request):
   blogs = Blog.objects.all()
   return render(request, 'index.html', {'blogs': blogs})
 
+@require_GET
 def blog_view(request, blog_id):
   blog = Blog.objects.get(pk=blog_id)
   posts = blog.posts.all()
@@ -40,6 +42,7 @@ def blog_view(request, blog_id):
     following = request.user.following.filter(pk=blog_id).exists()
   return render(request, 'blog_view.html', {'blog': blog, 'posts': posts, 'following': following})
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_create(request):
   if request.method == 'POST':
@@ -47,7 +50,6 @@ def blog_create(request):
     # print(form)
     if form.is_valid():
       blog = form.save(commit=False)
-      blog.date = datetime.now()
       blog.user = request.user
       blog.save()
       return redirect('blogs:blog_view', blog_id=blog.id)
@@ -56,6 +58,7 @@ def blog_create(request):
     form = BlogCreationForm()
     return render(request, 'blog_create.html', {'form': form})
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_edit(request,blog_id):
   # Check if user is the owner of the blog.
@@ -80,6 +83,7 @@ def blog_edit(request,blog_id):
     form = BlogEditForm()
     return render(request, 'blog_edit.html', {'form': form, 'blog': blog})
 
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url=reverse_lazy('auth:login'))
 def post_create(request, blog_id):
   blog=Blog.objects.get(id=blog_id)
@@ -91,7 +95,6 @@ def post_create(request, blog_id):
     form = PostCreationForm(request.POST)
     if form.is_valid():
       post = form.save(commit=False)
-      post.date = datetime.now()
       post.blog = blog
       post.save()
       return redirect('posts:post_view', post_id=post.id)
@@ -100,6 +103,7 @@ def post_create(request, blog_id):
     form = PostCreationForm()
     return render(request, 'post_create.html', {'form': form, 'blog': blog})
 
+@require_http_methods(['DELETE', 'POST'])
 @login_required(login_url=reverse_lazy('auth:login'))
 def blog_follower(request, blog_id):
   if request.method == 'POST':
