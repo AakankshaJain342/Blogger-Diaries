@@ -1,6 +1,6 @@
 # Blogger-Diaries
 
-## Installation
+### Installation
 To get started with the project follow these steps:
 ```
 git clone "https://github.com/aditya-chhaparia/Blogger-Diaries.git"
